@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL 解析器</title>
+<style>
+:root{
+    --bg:linear-gradient(135deg,#fcc96a 0%,#fcc96a 100%);
+    --glass:rgba(255,255,255,.15);
+    --text:#fff;
+    --accent:#3b82f6;
+    --radius:22px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:var(--font);
+    background:var(--bg);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    color:var(--text);
+}
+.card{
+    width:100%;
+    max-width:480px;
+    backdrop-filter:blur(18px);
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:var(--radius);
+    padding:35px 30px;
+    box-shadow:0 20px 40px rgba(0,0,0,.2);
+    animation:fadeIn .6s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+h1{text-align:center;margin-bottom:25px;font-size:24px}
+textarea{
+    width:100%;
+    height:100px;
+    padding:14px 18px;
+    border:none;
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.8);
+    color:#333;
+    font-size:15px;
+    resize:none;
+    transition:background .3s;
+}
+textarea:focus{background:#fff;outline:none}
+button{
+    margin-top:15px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:var(--radius);
+    background:var(--accent);
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .3s;
+}
+button:hover{transform:scale(1.03)}
+.output{margin-top:20px;font-size:15px;line-height:1.6}
+.output b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="card">
+    <h1>URL 解析器</h1>
+    <textarea id="url" placeholder="粘贴完整 URL 或仅参数…
+例如：https://example.com/path?name=张三&age=25&city=%E5%8C%97%E4%BA%AC"></textarea>
+    <button onclick="parseUrl()">解析</button>
+    <div class="output" id="output">解析结果将在这里显示</div>
+</div>
+
+<script>
+function parseUrl(){
+    const raw=document.getElementById('url').value.trim();
+    if(!raw){alert('请输入 URL');return}
+
+    let url,params;
+    try{
+        url=new URL(raw);
+    }catch{
+        // 失败时当作纯参数处理
+        url=new URL('https://dummy.com/?'+raw);
+    }
+
+    const path=url.pathname;
+    const search=url.search.slice(1);
+    const hash=url.hash.slice(1);
+
+    const pairs=search?search.split('&').map(p=>p.split('=')):[];
+    const obj={};
+    pairs.forEach(([k,v])=>obj[decodeURIComponent(k)]=decodeURIComponent(v||''));
+
+    const html=`
+        <b>完整地址：</b>${url.href}<br>
+        <b>协议：</b>${url.protocol}<br>
+        <b>域名：</b>${url.hostname}<br>
+        <b>端口：</b>${url.port||'(默认)'}<br>
+        <b>路径：</b>${path}<br>
+        <b>查询串：</b>${search}<br>
+        <b>哈希：</b>${hash}<br>
+        <b>参数：</b><ul style="margin:0;padding-left:20px">
+            ${Object.entries(obj).map(([k,v])=>`<li>${k} = ${v}</li>`).join('')}
+        </ul>
+    `;
+    document.getElementById('output').innerHTML=html;
+}
+</script>
+</body>
+</html>

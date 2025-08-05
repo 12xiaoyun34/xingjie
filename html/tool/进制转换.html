@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>丝滑进制转换器</title>
+    <style>
+        /* 变量：统一配色 & 动画时间 */
+        :root{
+            --bg: linear-gradient(135deg,#f7a100 0%, #fcc96a 100%);
+            --card-bg: rgba(255,255,255,0.15);
+            --card-border: rgba(255,255,255,0.25);
+            --accent: #00e0a1;
+            --text: #fff;
+            --dur: .4s;
+        }
+        *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;}
+        body{
+            margin:0;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:var(--bg);
+            color:var(--text);
+        }
+        .card{
+            width:360px;
+            padding:40px 35px 45px;
+            border-radius:18px;
+            background:var(--card-bg);
+            border:1px solid var(--card-border);
+            backdrop-filter:blur(16px);
+            box-shadow:0 8px 32px rgba(31,38,135,.37);
+            transition:transform var(--dur);
+        }
+        .card:hover{transform:translateY(-4px);}
+        h1{margin:0 0 30px;font-size:26px;text-align:center;letter-spacing:.5px;}
+        label{font-size:14px;margin-bottom:6px;display:block;opacity:.8;}
+        input{
+            width:100%;
+            padding:10px 12px;
+            font-size:16px;
+            border:none;
+            border-radius:8px;
+            outline:none;
+            background:rgba(255,255,255,.12);
+            color:var(--text);
+            transition:background var(--dur),box-shadow var(--dur);
+        }
+        input::placeholder{color:rgba(255,255,255,.6);}
+        input:focus{background:rgba(255,255,255,.22);box-shadow:0 0 0 3px rgba(0,224,161,.35);}
+        input+label{margin-top:18px;}
+        button{
+            width:100%;
+            margin-top:28px;
+            padding:12px;
+            font-size:16px;
+            font-weight:600;
+            border:none;
+            border-radius:8px;
+            color:#222;
+            background:var(--accent);
+            cursor:pointer;
+            position:relative;
+            overflow:hidden;
+            transition:transform var(--dur),background var(--dur);
+        }
+        button:hover{background:#00ffb3;transform:translateY(-2px);}
+        button:active{transform:scale(.96);}
+        /* 波纹效果 */
+        button span.ripple{
+            position:absolute;
+            border-radius:50%;
+            transform:scale(0);
+            animation:ripple .6s linear;
+            background:rgba(255,255,255,.6);
+        }
+        @keyframes ripple{
+            to{transform:scale(4);opacity:0;}
+        }
+        #result{
+            margin-top:28px;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:.5px;
+            min-height:30px;
+            transition:opacity var(--dur);
+        }
+        /* 数字翻牌 */
+        .digit{
+            display:inline-block;
+            transition:transform .35s cubic-bezier(.65,.05,.36,1);
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>进制转换</h1>
+
+    <label for="input">输入数字</label>
+    <input id="input" type="text" placeholder="例：1A3F"/>
+
+    <label for="fromBase">原进制</label>
+    <input id="fromBase" type="number" min="2" max="36" placeholder="2-36"/>
+
+    <label for="toBase">目标进制</label>
+    <input id="toBase" type="number" min="2" max="36" placeholder="2-36"/>
+
+    <button id="convertBtn">转换</button>
+
+    <div id="result">结果将显示在这里</div>
+</div>
+
+<script>
+/* 波纹按钮 */
+document.getElementById('convertBtn').addEventListener('click',function(e){
+    const btn = e.currentTarget;
+    const circle = document.createElement('span');
+    const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+    const radius = diameter/2;
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.clientX - btn.offsetLeft - radius}px`;
+    circle.style.top = `${e.clientY - btn.offsetTop - radius}px`;
+    circle.classList.add('ripple');
+    btn.appendChild(circle);
+    setTimeout(()=>circle.remove(),600);
+    convert();
+});
+
+/* 进制转换 + 翻牌动画 */
+function convert(){
+    const val = document.getElementById('input').value.trim();
+    const from = parseInt(document.getElementById('fromBase').value);
+    const to   = parseInt(document.getElementById('toBase').value);
+    const resBox = document.getElementById('result');
+
+    if(!val || isNaN(from) || isNaN(to) || from<2 || from>36 || to<2 || to>36){
+        resBox.textContent='请正确填写各项！';
+        return;
+    }
+
+    /* 计算结果 */
+    let result;
+    try{
+        result = parseInt(val, from).toString(to).toUpperCase();
+    }catch(e){
+        resBox.textContent='转换失败，请检查输入';
+        return;
+    }
+
+    /* 翻牌动画 */
+    resBox.style.opacity=0;
+    setTimeout(()=>{
+        resBox.innerHTML='结果： ';
+        [...result].forEach((ch,i)=>{
+            const span = document.createElement('span');
+            span.className='digit';
+            span.textContent=ch;
+            span.style.transform='translateY(-20px)';
+            resBox.appendChild(span);
+            requestAnimationFrame(()=>{
+                span.style.transform='translateY(0)';
+            });
+        });
+        resBox.style.opacity=1;
+    },200);
+}
+</script>
+</body>
+</html>

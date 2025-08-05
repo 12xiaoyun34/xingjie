@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        .loading {
+            color: #666;
+            font-size: 18px;
+        }
+        .controls {
+            display: flex;
+            padding: 20px;
+            gap: 10px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-secondary {
+            background: #eee;
+            color: #333;
+        }
+        .favorites {
+            padding: 0 20px 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .favorites h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        .favorites img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .favorites .item {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img id="image" alt="随机图片">
+            <div class="loading" id="loading">加载中...</div>
+        </div>
+        <div class="controls">
+            <button class="btn btn-primary" id="loadBtn" onclick="loadImage()">换一张</button>
+            <button class="btn btn-secondary" id="favoriteBtn" onclick="toggleFavorite()">收藏</button>
+            <button class="btn btn-secondary" id="downloadBtn" onclick="downloadImage()">下载</button>
+        </div>
+        <div class="favorites">
+            <h3>我的收藏</h3>
+            <div id="favoritesList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'https://api.xingchenfu.xyz/API/tu.php?t=' + Date.now();
+        let current = '';
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+        function loadImage() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('image').style.display = 'none';
+            document.getElementById('loadBtn').disabled = true;
+
+            const img = new Image();
+            img.onload = () => {
+                current = img.src;
+                document.getElementById('image').src = current;
+                document.getElementById('image').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loadBtn').disabled = false;
+                updateFavoriteBtn();
+            };
+            img.onerror = () => {
+                document.getElementById('loading').textContent = '加载失败，重试中...';
+                setTimeout(loadImage, 1000);
+            };
+            img.src = API + '&rand=' + Date.now();
+        }
+
+        function toggleFavorite() {
+            if (!current) return;
+            const index = favorites.findIndex(f => f === current);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                alert('已取消收藏');
+            } else {
+                favorites.unshift(current);
+                alert('已收藏');
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadFavorites();
+            updateFavoriteBtn();
+        }
+
+        function updateFavoriteBtn() {
+            const btn = document.getElementById('favoriteBtn');
+            btn.textContent = favorites.includes(current) ? '已收藏' : '收藏';
+        }
+
+        function loadFavorites() {
+            const list = document.getElementById('favoritesList');
+            list.innerHTML = favorites.length
+                ? favorites.map(url => `
+                    <div class="item">
+                        <img src="${url}" onclick="setImage('${url}')">
+                        <button onclick="removeFavorite('${url}')">删除</button>
+                    </div>`).join('')
+                : '<p>暂无收藏</p>';
+        }
+
+        function setImage(url) {
+            current = url;
+            document.getElementById('image').src = url;
+            updateFavoriteBtn();
+        }
+
+        function removeFavorite(url) {
+            favorites = favorites.filter(f => f !== url);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadFavorites();
+            updateFavoriteBtn();
+        }
+
+        function downloadImage() {
+            if (!current) return;
+            const a = document.createElement('a');
+            a.href = current;
+            a.download = 'image.jpg';
+            a.click();
+        }
+
+        loadImage();
+        loadFavorites();
+    </script>
+</body>
+</html>

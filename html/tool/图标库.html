@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图标库</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 15px;
+            position: relative;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: -200px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: left 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #444;
+        }
+        
+        .sidebar-menu {
+            padding: 10px 0;
+        }
+        
+        .sidebar-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu-item:hover {
+            background-color: #444;
+        }
+        
+        .sidebar-menu-item.active {
+            background-color: #007bff;
+        }
+        
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .main-content {
+            margin-left: 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+            background: linear-gradient(45deg, #007bff, #9c27b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-box:focus {
+            border-color: #007bff;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+        }
+        
+        .icon-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .icon-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #007bff;
+        }
+        
+        .icon-name {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .copy-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+        
+        .category-tab {
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            margin-right: 10px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .category-tab.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .category-tab:last-child {
+            margin-right: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #ccc;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .favorite-btn.active {
+            color: #ff6b6b;
+        }
+        
+        /* 设置按钮和弹窗样式 */
+        .settings-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .settings-modal {
+            display: none;
+            position: fixed;
+            bottom: 130px;
+            right: 20px;
+            width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 15px;
+        }
+        
+        .settings-modal h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .settings-modal .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .settings-modal label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .settings-modal select, .settings-modal input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .settings-modal button.close-btn {
+            background-color: #e9ecef;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* 消息图标按钮 */
+        .message-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">图标库</div>
+        <div class="sidebar-menu">
+            <div class="sidebar-menu-item active">首页</div>
+            <div class="sidebar-menu-item">分类</div>
+            <div class="sidebar-menu-item">收藏</div>
+            <div class="sidebar-menu-item">设置</div>
+            <div class="sidebar-menu-item">帮助</div>
+        </div>
+    </div>
+    
+    <!-- 侧边栏切换按钮 -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="main-content">
+        <header>
+            <h1>图标库</h1>
+            <p>选择并复制您需要的图标代码</p>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="搜索图标...">
+        </div>
+        
+        <div class="category-tabs">
+            <div class="category-tab active">全部</div>
+            <div class="category-tab">社交媒体</div>
+            <div class="category-tab">导航</div>
+            <div class="category-tab">媒体</div>
+            <div class="category-tab">购物</div>
+            <div class="category-tab">金融</div>
+            <div class="category-tab">健康</div>
+            <div class="category-tab">教育</div>
+            <div class="category-tab">天气</div>
+            <div class="category-tab">交通</div>
+            <div class="category-tab">办公</div>
+        </div>
+        
+        <div class="icon-grid" id="iconGrid">
+        </div>
+        
+        <footer>
+            <p>© 2023 图标库 | 使用Font Awesome图标</p>
+        </footer>
+    </div>
+    
+    <!-- 设置按钮 -->
+    <button class="settings-btn" id="settingsBtn">
+        <i class="fas fa-cog"></i>
+    </button>
+    
+    <!-- 设置弹窗 -->
+    <div class="settings-modal" id="settingsModal">
+        <h3>设置</h3>
+        <div class="form-group">
+            <label for="iconSize">图标大小</label>
+            <select id="iconSize">
+                <option value="24">小 (24px)</option>
+                <option value="36" selected>中 (36px)</option>
+                <option value="48">大 (48px)</option>
+                <option value="60">超大 (60px)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="iconColor">图标颜色</label>
+            <input type="color" id="iconColor" value="#007bff">
+        </div>
+        <button class="close-btn" id="closeSettings">关闭</button>
+    </div>
+    
+    <!-- 消息图标按钮 -->
+    <button class="message-btn" id="messageBtn">
+        <i class="fas fa-comment"></i>
+    </button>
+    
+    <script>
+        const icons = [
+            // 导航类图标
+            { name: "home", icon: "fa-house", category: "导航" },
+            { name: "compass", icon: "fa-compass", category: "导航" },
+            { name: "map", icon: "fa-map", category: "导航" },
+            { name: "location-dot", icon: "fa-location-dot", category: "导航" },
+            { name: "directions", icon: "fa-location-arrow", category: "导航" },
+            
+            // 社交媒体类图标
+            { name: "facebook", icon: "fa-facebook", category: "社交媒体" },
+            { name: "twitter", icon: "fa-twitter", category: "社交媒体" },
+            { name: "instagram", icon: "fa-instagram", category: "社交媒体" },
+            { name: "linkedin", icon: "fa-linkedin", category: "社交媒体" },
+            { name: "whatsapp", icon: "fa-whatsapp", category: "社交媒体" },
+            { name: "tiktok", icon: "fa-tiktok", category: "社交媒体" },
+            { name: "youtube", icon: "fa-youtube", category: "社交媒体" },
+            { name: "snapchat", icon: "fa-snapchat", category: "社交媒体" },
+            
+            // 媒体类图标
+            { name: "play", icon: "fa-play", category: "媒体" },
+            { name: "pause", icon: "fa-pause", category: "媒体" },
+            { name: "stop", icon: "fa-stop", category: "媒体" },
+            { name: "volume", icon: "fa-volume-up", category: "媒体" },
+            { name: "camera", icon: "fa-camera", category: "媒体" },
+            { name: "video", icon: "fa-video", category: "媒体" },
+            { name: "music", icon: "fa-music", category: "媒体" },
+            { name: "image", icon: "fa-image", category: "媒体" },
+            
+            // 购物类图标
+            { name: "cart", icon: "fa-cart-shopping", category: "购物" },
+            { name: "bag", icon: "fa-bag-shopping", category: "购物" },
+            { name: "gift", icon: "fa-gift", category: "购物" },
+            { name: "tag", icon: "fa-tag", category: "购物" },
+            { name: "credit-card", icon: "fa-credit-card", category: "购物" },
+            { name: "receipt", icon: "fa-receipt", category: "购物" },
+            
+            // 金融类图标
+            { name: "dollar", icon: "fa-dollar-sign", category: "金融" },
+            { name: "euro", icon: "fa-euro-sign", category: "金融" },
+            { name: "bitcoin", icon: "fa-bitcoin", category: "金融" },
+            { name: "chart", icon: "fa-chart-line", category: "金融" },
+            { name: "piggy-bank", icon: "fa-piggy-bank", category: "金融" },
+            { name: "calculator", icon: "fa-calculator", category: "金融" },
+            
+            // 健康类图标
+            { name: "heart", icon: "fa-heart", category: "健康" },
+            { name: "stethoscope", icon: "fa-stethoscope", category: "健康" },
+            { name: "pills", icon: "fa-pills", category: "健康" },
+            { name: "first-aid", icon: "fa-first-aid", category: "健康" },
+            { name: "tooth", icon: "fa-tooth", category: "健康" },
+            { name: "dna", icon: "fa-dna", category: "健康" },
+            
+            // 教育类图标
+            { name: "book", icon: "fa-book", category: "教育" },
+            { name: "graduation-cap", icon: "fa-graduation-cap", category: "教育" },
+            { name: "pen", icon: "fa-pen-to-square", category: "教育" },
+            { name: "chalkboard", icon: "fa-chalkboard-teacher", category: "教育" },
+            { name: "school", icon: "fa-school", category: "教育" },
+            
+            // 天气类图标
+            { name: "sun", icon: "fa-sun", category: "天气" },
+            { name: "cloud", icon: "fa-cloud", category: "天气" },
+            { name: "rain", icon: "fa-cloud-rain", category: "天气" },
+            { name: "snow", icon: "fa-snowflake", category: "天气" },
+            { name: "wind", icon: "fa-wind", category: "天气" },
+            { name: "umbrella", icon: "fa-umbrella", category: "天气" },
+            
+            // 交通类图标
+            { name: "car", icon: "fa-car", category: "交通" },
+            { name: "bus", icon: "fa-bus", category: "交通" },
+            { name: "train", icon: "fa-train", category: "交通" },
+            { name: "plane", icon: "fa-plane", category: "交通" },
+            { name: "bicycle", icon: "fa-bicycle", category: "交通" },
+            { name: "traffic-light", icon: "fa-traffic-light", category: "交通" },
+            
+            // 办公类图标
+            { name: "calendar", icon: "fa-calendar", category: "办公" },
+            { name: "clock", icon: "fa-clock", category: "办公" },
+            { name: "file", icon: "fa-file", category: "办公" },
+            { name: "folder", icon: "fa-folder", category: "办公" },
+            { name: "printer", icon: "fa-printer", category: "办公" },
+            { name: "briefcase", icon: "fa-briefcase", category: "办公" },
+        ];
+        
+        let favoriteIcons = [];
+        let currentSize = 36;
+        let currentColor = "#007bff";
+        
+        function renderIcons(iconsToRender) {
+            const iconGrid = document.getElementById('iconGrid');
+            iconGrid.innerHTML = '';
+            
+            iconsToRender.forEach(icon => {
+                const iconCard = document.createElement('div');
+                iconCard.className = 'icon-card';
+                
+                const iconElement = document.createElement('div');
+                iconElement.className = 'icon';
+                iconElement.innerHTML = `<i class="fas ${icon.icon}"></i>`;
+                
+                const iconName = document.createElement('div');
+                iconName.className = 'icon-name';
+                iconName.textContent = icon.name;
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = '复制代码';
+                copyBtn.addEventListener('click', () => {
+                    copyToClipboard(`<i class="fas ${icon.icon}"></i>`);
+                });
+                
+                const favoriteBtn = document.createElement('button');
+                favoriteBtn.className = 'favorite-btn';
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i>';
+                favoriteBtn.addEventListener('click', () => {
+                    toggleFavorite(icon, favoriteBtn);
+                });
+                
+                iconCard.appendChild(iconElement);
+                iconCard.appendChild(iconName);
+                iconCard.appendChild(copyBtn);
+                iconCard.appendChild(favoriteBtn);
+                iconGrid.appendChild(iconCard);
+            });
+            
+            updateIconSize();
+            updateIconColor();
+        }
+        
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            const copyBtn = event.target;
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '已复制!';
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 1500);
+        }
+        
+        function toggleFavorite(icon, button) {
+            const iconIndex = favoriteIcons.findIndex(fav => fav.name === icon.name);
+            
+            if (iconIndex === -1) {
+                favoriteIcons.push(icon);
+                button.innerHTML = '<i class="fas fa-heart"></i>';
+                button.classList.add('active');
+            } else {
+                favoriteIcons.splice(iconIndex, 1);
+                button.innerHTML = '<i class="far fa-heart"></i>';
+                button.classList.remove('active');
+            }
+        }
+        
+        function updateIconSize() {
+            const icons = document.querySelectorAll('.icon i');
+            icons.forEach(icon => {
+                icon.style.fontSize = `${currentSize}px`;
+            });
+        }
+        
+        function updateIconColor() {
+            const icons = document.querySelectorAll('.icon i');
+            icons.forEach(icon => {
+                icon.style.color = currentColor;
+            });
+        }
+        
+        const searchBox = document.querySelector('.search-box');
+        searchBox.addEventListener('input', () => {
+            const searchTerm = searchBox.value.toLowerCase();
+            const filteredIcons = icons.filter(icon => 
+                icon.name.toLowerCase().includes(searchTerm) || 
+                icon.icon.toLowerCase().includes(searchTerm)
+            );
+            renderIcons(filteredIcons);
+        });
+        
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.textContent;
+                if (category === '全部') {
+                    renderIcons(icons);
+                } else {
+                    const filteredIcons = icons.filter(icon => icon.category === category);
+                    renderIcons(filteredIcons);
+                }
+            });
+        });
+        
+        
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettings = document.getElementById('closeSettings');
+        const sizeSelector = document.getElementById('iconSize');
+        const colorSelector = document.getElementById('iconColor');
+        
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = settingsModal.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        closeSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        
+        sizeSelector.addEventListener('change', () => {
+            currentSize = parseInt(sizeSelector.value);
+            updateIconSize();
+        });
+        
+        colorSelector.addEventListener('input', () => {
+            currentColor = colorSelector.value;
+            updateIconColor();
+        });
+        
+        
+        document.addEventListener('click', (event) => {
+            if (!settingsBtn.contains(event.target) && !settingsModal.contains(event.target)) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        const messageBtn = document.getElementById('messageBtn');
+        messageBtn.addEventListener('click', () => {
+            window.open('https://support.qq.com/product/711925', '_blank');
+        });
+        
+        
+        const menuItems = document.querySelectorAll('.sidebar-menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+        
+        
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.style.left = sidebar.style.left === '0px' ? '-200px' : '0px';
+        });
+        
+        renderIcons(icons);
+    </script>
+</body>
+</html>

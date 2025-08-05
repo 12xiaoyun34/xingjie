@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级API调试工具</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css">
+    <style>
+        @font-face {
+            font-family: 'Ziti';
+            src: url('ziti.woff2') format('woff2'),
+                 url('ziti.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Ziti', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #63b3ed 0%, #3182ce 50%, #2b6cb0 100%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            font-size: 1.6rem;
+            margin-bottom: 1.8rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        input, select, textarea, .response-box {
+            padding: 1rem 1.4rem;
+            border: 1px solid rgba(203, 213, 224, 0.5);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            width: 100%;
+            color: #4a5568;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #90cdf4;
+            box-shadow: 0 0 0 3px rgba(144, 205, 244, 0.2), inset 0 1px 3px rgba(0,0,0,0.05);
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1.1rem 2.2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(50, 115, 220, 0.15);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 115, 220, 0.2);
+        }
+
+        button:hover::after {
+            opacity: 1;
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(50, 115, 220, 0.15);
+        }
+
+        .response-box {
+            min-height: 300px;
+            max-height: 60vh;
+            overflow: auto;
+            position: relative;
+            white-space: pre-wrap;
+            font-family: 'Ziti', Monaco, Consolas, monospace;
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid rgba(226, 232, 240, 0.7);
+            padding: 1.8rem;
+            line-height: 1.6;
+            color: #4a5568;
+            border-radius: 10px;
+        }
+
+        .params-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .params-table th {
+            background: linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%);
+            font-weight: 600;
+            color: #4a5568;
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .params-table td {
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid #edf2f7;
+            background: white;
+        }
+
+        .params-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .params-table input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .params-table input:focus {
+            background: white;
+        }
+
+        .params-table button {
+            padding: 0.6rem 1rem;
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            box-shadow: 0 2px 4px rgba(197, 48, 48, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .params-table button:hover {
+            background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+        }
+
+        .add-param-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(56, 161, 105, 0.1) !important;
+        }
+
+        .add-param-btn:hover {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%) !important;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            padding: 0.6rem;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .copy-btn:hover {
+            background: #3182ce;
+            color: white;
+            border-color: transparent;
+            transform: scale(1.1);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(66, 153, 225, 0.1);
+            border-radius: 50%;
+            border-top-color: #3182ce;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        .loading-text {
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(45, 55, 72, 0.97);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            top: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .method-select {
+            flex: 0 0 110px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 2.2rem;
+        }
+
+        #url {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .auth-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .method-select, #url {
+                width: 100%;
+            }
+            
+            body {
+                padding: 1.5rem;
+            }
+            
+            .card {
+                padding: 1.8rem;
+            }
+            
+            .card-header {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card request-card">
+            <h2 class="card-header">
+                <i class="ti ti-api"></i>
+                API请求配置
+            </h2>
+            <div class="input-group">
+                <select id="method" class="method-select">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="PATCH">PATCH</option>
+                    <option value="HEAD">HEAD</option>
+                    <option value="OPTIONS">OPTIONS</option>
+                </select>
+                <input type="url" id="url" placeholder="输入API地址 (例如: https://api.example.com/data)" required>
+                <button onclick="sendRequest()">
+                    <i class="ti ti-send"></i>
+                    发送请求
+                </button>
+            </div>
+
+            <div class="header-controls">
+                <div class="control-group">
+                    <label for="content-type">Content-Type:</label>
+                    <select id="content-type">
+                        <option value="application/json">application/json</option>
+                        <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+                        <option value="multipart/form-data">multipart/form-data</option>
+                        <option value="text/plain">text/plain</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="response-format">返回格式:</label>
+                    <select id="response-format">
+                        <option value="json">JSON</option>
+                        <option value="text">文本</option>
+                        <option value="blob">二进制数据</option>
+                        <option value="formData">表单数据</option>
+                    </select>
+                </div>
+                
+                <div class="control-group" style="display: flex; align-items: center;">
+                    <input type="checkbox" id="cors-proxy">
+                    <label for="cors-proxy" style="margin-left: 0.5rem;">使用CORS代理</label>
+                </div>
+            </div>
+            
+            <div class="auth-section">
+                <h4><i class="ti ti-lock"></i> 认证信息</h4>
+                <div class="input-group">
+                    <input type="text" id="auth-header" placeholder="认证头 (如: Authorization)">
+                    <input type="text" id="auth-value" placeholder="认证值 (如: Bearer token)">
+                </div>
+            </div>
+            
+            <h4><i class="ti ti-list"></i> 请求参数</h4>
+            <button class="add-param-btn" onclick="addParamRow()">
+                <i class="ti ti-plus"></i>
+                添加参数
+            </button>
+            <table class="params-table" id="params-table">
+                <thead>
+                    <tr>
+                        <th>参数名</th>
+                        <th>参数值</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card response-card">
+            <h2 class="card-header">
+                <i class="ti ti-code"></i>
+                响应结果
+            </h2>
+            <div class="response-box" id="response"></div>
+            <div class="copy-btn" onclick="copyResponse()" title="复制到剪贴板">
+                <i class="ti ti-copy"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loading-text">正在发送请求...</div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="ti ti-circle-check" id="toast-icon"></i>
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        // DOM元素
+        const urlInput = document.getElementById('url');
+        const methodSelect = document.getElementById('method');
+        const contentTypeSelect = document.getElementById('content-type');
+        const responseFormat = document.getElementById('response-format');
+        const corsProxy = document.getElementById('cors-proxy');
+        const authHeaderInput = document.getElementById('auth-header');
+        const authValueInput = document.getElementById('auth-value');
+        const paramsTable = document.getElementById('params-table').getElementsByTagName('tbody')[0];
+        const responseBox = document.getElementById('response');
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastText = document.getElementById('toast-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+
+        // 添加参数行
+        function addParamRow(key = '', value = '') {
+            const row = paramsTable.insertRow();
+            
+            const keyCell = row.insertCell(0);
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.placeholder = '参数名';
+            keyInput.value = key;
+            keyCell.appendChild(keyInput);
+            
+            const valueCell = row.insertCell(1);
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = '参数值';
+            valueInput.value = value;
+            valueCell.appendChild(valueInput);
+            
+            const actionCell = row.insertCell(2);
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '<i class="ti ti-trash"></i> 删除';
+            deleteBtn.onclick = function() {
+                paramsTable.removeChild(row);
+            };
+            actionCell.appendChild(deleteBtn);
+        }
+
+        // 获取所有参数
+        function getParams() {
+            const params = {};
+            const rows = paramsTable.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const inputs = row.getElementsByTagName('input');
+                if (inputs.length >= 2 && inputs[0].value.trim() !== '') {
+                    params[inputs[0].value.trim()] = inputs[1].value.trim();
+                }
+            }
+            
+            return Object.keys(params).length ? params : null;
+        }
+
+        // 编码参数
+        function encodeParams(params, contentType) {
+            if (!params) return null;
+            
+            if (contentType === 'application/x-www-form-urlencoded') {
+                return Object.keys(params)
+                    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+                    .join('&');
+            } else if (contentType === 'multipart/form-data') {
+                const formData = new FormData();
+                for (const [key, value] of Object.entries(params)) {
+                    formData.append(key, value);
+                }
+                return formData;
+            }
+            return JSON.stringify(params);
+        }
+
+        // 验证URL
+        function validateUrl(url) {
+            try {
+                const parsed = new URL(url);
+                return ['http:', 'https:'].includes(parsed.protocol);
+            } catch {
+                return false;
+            }
+        }
+
+        // 格式化响应
+        async function formatResponse(response) {
+            const format = responseFormat.value;
+            
+            try {
+                switch(format) {
+                    case 'json':
+                        const json = await response.json();
+                        return JSON.stringify(json, null, 2);
+                    case 'text':
+                        return await response.text();
+                    case 'blob':
+                        const blob = await response.blob();
+                        return `Blob (${blob.type}, ${blob.size} bytes)`;
+                    case 'formData':
+                        const formData = await response.formData();
+                        let result = '';
+                        for (const [key, value] of formData.entries()) {
+                            result += `${key}: ${value}\n`;
+                        }
+                        return result || 'No form data received';
+                    default:
+                        return await response.text();
+                }
+            } catch (e) {
+                return `无法解析为${format}: ${e.message}`;
+            }
+        }
+
+        // 发送请求
+        async function sendRequest() {
+            const url = urlInput.value.trim();
+            const method = methodSelect.value;
+            
+            if (!validateUrl(url)) {
+                showToast('请输入有效的URL (必须包含http://或https://)', 'ti ti-alert-circle', '#e53e3e');
+                return;
+            }
+
+            loadingOverlay.classList.add('active');
+            loadingText.textContent = '正在发送请求...';
+            responseBox.innerHTML = '';
+            
+            try {
+                const params = getParams();
+                const contentType = contentTypeSelect.value;
+                let requestUrl = corsProxy.checked ? 
+                    `https://cors-anywhere.herokuapp.com/${url.replace(/^https?:\/\//, '')}` : url;
+                
+                // 准备请求头
+                const headers = {};
+                if (method !== 'GET') {
+                    headers['Content-Type'] = contentType;
+                }
+                
+                // 添加认证头
+                if (authHeaderInput.value.trim() && authValueInput.value.trim()) {
+                    headers[authHeaderInput.value.trim()] = authValueInput.value.trim();
+                }
+                
+                // 处理参数
+                let requestBody = null;
+                if (method === 'GET' && params) {
+                    const queryParams = new URLSearchParams();
+                    for (const [key, value] of Object.entries(params)) {
+                        queryParams.append(encodeURIComponent(key), encodeURIComponent(value));
+                    }
+                    requestUrl += (requestUrl.includes('?') ? '&' : '?') + queryParams.toString();
+                } else if (params) {
+                    requestBody = encodeParams(params, contentType);
+                }
+                
+                loadingText.textContent = '正在等待服务器响应...';
+                const startTime = performance.now();
+                
+                const response = await fetch(requestUrl, {
+                    method,
+                    headers,
+                    body: method !== 'GET' ? requestBody : undefined,
+                    mode: 'cors'
+                });
+                
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(0);
+                
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`HTTP错误! 状态码: ${response.status}\n${errorData}`);
+                }
+                
+                const formattedResponse = await formatResponse(response);
+                responseBox.textContent = formattedResponse;
+                
+                showToast(`请求成功 (${duration}ms)`, 'ti ti-check', '#48bb78');
+                
+            } catch (error) {
+                console.error('API请求错误:', error);
+                
+                let errorMessage = error.message;
+                if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                    errorMessage = '网络请求失败: ' + (corsProxy.checked ? 
+                        '代理服务器可能不可用' : '请尝试启用CORS代理或检查API地址');
+                }
+                
+                responseBox.textContent = `错误详情:\n\n${errorMessage}`;
+                showToast(`请求失败: ${errorMessage}`, 'ti ti-alert-triangle', '#e53e3e');
+                
+            } finally {
+                loadingOverlay.classList.remove('active');
+            }
+        }
+
+        // 复制响应
+        function copyResponse() {
+            if (!responseBox.textContent.trim()) {
+                showToast('没有内容可复制', 'ti ti-clipboard-off', '#ed8936');
+                return;
+            }
+            
+            navigator.clipboard.writeText(responseBox.textContent)
+                .then(() => showToast('已复制到剪贴板!', 'ti ti-copy', '#4299e1'))
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    showToast('复制失败', 'ti ti-alert-circle', '#e53e3e');
+                });
+        }
+
+        // 显示提示
+        function showToast(text, icon, color = '#48bb78') {
+            clearTimeout(toast.timeout);
+            
+            toast.style.backgroundColor = color;
+            toastIcon.className = icon;
+            toastText.textContent = text;
+            
+            toast.classList.add('show');
+            
+            toast.timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            addParamRow();
+            urlInput.value = 'https://jsonplaceholder.typicode.com/posts/1';
+        });
+    </script>
+</body>
+</html>

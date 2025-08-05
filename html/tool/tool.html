@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <style>
+            body {
+                background-color: #fcc96a;
+                text-align: center;
+                color: #f7a100;
+            }
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }
+            .tool-card {
+                width: 18rem;
+                background-color: white;
+                border-radius: 0 0 0.5rem 0.5rem;
+                border-top: 8px solid #f97316;
+                padding: 1.25rem 1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                margin-bottom: 1rem;
+            }
+            .tool-title {
+                font-size: 1.125rem;
+                font-weight: 700;
+                font-family: ui-sans-serif, system-ui, sans-serif;
+            }
+            .tool-desc {
+                color: #9ca3af;
+                font-size: 0.875rem;
+                padding: 0.75rem 0;
+            }
+            .tool-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .tool-button {
+                background-color: white;
+                padding: 0 0.5rem;
+                border-radius: 0.75rem;
+                font-size: 0.875rem;
+                transition: background-color 0.3s ease-in-out;
+                border: 2px solid orange;
+                color: #94a3b8;
+            }
+            .tool-button:hover {
+                background-color: #94a3b8;
+            }
+            .tool-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                stroke: currentColor;
+                stroke-width: 1.5;
+            }
+        </style>
+    </head>
+<body>
+    <div class="container">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <div class="tool-card">
+      <p class="tool-title">搜索</p>
+      <div class="tool-desc">
+        一个搜索系统，调用六种不同的搜索api以进行搜索
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="搜索.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">身份证补齐</p>
+      <div class="tool-desc">
+        只需输入身份证前17位，即可推出最后一位，只用于日常娱乐
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="身份证补齐.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">百科查询</p>
+      <div class="tool-desc">
+        一个百科查询的工具，输入关键词，开始搜索
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="百科查询.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">备忘录</p>
+      <div class="tool-desc">
+        这可以帮你记下一些重要的事情
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="备忘录.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">进制转换</p>
+      <div class="tool-desc">
+        转换一些你懂不了一点的数字
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="进制转换.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">摩斯密码翻译</p>
+      <div class="tool-desc">
+        --.-.-..-.--..-/-.--.--.-.-..../-.--..-.-----.-/-.-.-........--
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="摩斯密码翻译器.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">天干地支测算</p>
+      <div class="tool-desc">
+        用于测试年份对应的天干地支
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="天干地支.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">短信轰炸</p>
+      <div class="tool-desc">
+        ⚠不可用于非法行为
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="短信轰炸.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">二维码生成器</p>
+      <div class="tool-desc">
+        可用于生成二维码
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="二维码生成.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">密码生成器</p>
+      <div class="tool-desc">
+        生成自定义强度的密码
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="密码生成器.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">url解析器</p>
+      <div class="tool-desc">
+        解析url
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="url解析.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">某种图片</p>
+      <div class="tool-desc">
+        🔞
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="图片.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">答案之书</p>
+      <div class="tool-desc">
+        遇事不决？答案之书！
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="答案之书.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">DDOS攻击</p>
+      <div class="tool-desc">
+        ⚠不可用于非法行为
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="DDOS.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">前端编辑器</p>
+      <div class="tool-desc">
+        十分优秀的前端编辑器
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="前端编辑器.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">API调试工具</p>
+      <div class="tool-desc">
+        高级API调试工具
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="API.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">发送邮件</p>
+      <div class="tool-desc">
+        可用于代发送邮件📧
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="发送邮件.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">base64加密</p>
+      <div class="tool-desc">
+        加密/解密内容
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="加密.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">图标库</p>
+      <div class="tool-desc">
+        内含大量常用图标的库
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="图标库.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tool-card">
+      <p class="tool-title">一对一聊天室</p>
+      <div class="tool-desc">
+        支持输入对方ID进行聊天的程序
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="1对1聊天室.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+        </div>
+      </div>
+      </div>
+      
+      <div class="tool-card">
+      <p class="tool-title">AI在线聊天</p>
+      <div class="tool-desc">
+        小橙AI为你服务...
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="AI.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+          </div>
+      </div>
+      </div>
+      <div class="tool-card">
+      <p class="tool-title">网页取源</p>
+      <div class="tool-desc">
+        更好的网页取源工具
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="网站取源.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+          </div>
+      </div>
+      </div>
+      
+      <div class="tool-card">
+      <p class="tool-title">网站检测</p>
+      <div class="tool-desc">
+        一个网站可用性检测
+      </div>
+      <div class="tool-footer">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+        <div style="font-size: 0.875rem; display: flex; gap: 0.5rem;">
+          <a href="网站监测.html">
+          <button class="tool-button">
+            开始
+          </button>
+          </a>
+          </div>
+      </div>
+      </div>
+    </div>
+</div>
+</body>
+</html>

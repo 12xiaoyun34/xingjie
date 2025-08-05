@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>搜索</title>
+<style>
+:root{
+    --primary:#fcc96a;
+    --primary-dark:#f7a100;
+    --radius:12px;
+    --blur:18px;
+    --transition:.25s ease;
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,"PingFang SC",sans-serif;
+    background:linear-gradient(135deg,#f7a100 0%,#fcc96a 100%);
+    overflow:hidden;
+}
+.browser-container{
+    width:340px;
+    padding:32px 28px;
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.55);
+    -webkit-backdrop-filter:blur(var(--blur));
+    backdrop-filter:blur(var(--blur));
+    box-shadow:0 8px 32px rgba(112, 112, 112, .75);
+    border:1px solid rgba(255,255,255,.18);
+    animation:fadeIn .6s ease;
+}
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+.title{
+    margin:0 0 24px;
+    font-size:22px;
+    font-weight:600;
+    color:#333;
+    text-align:center;
+}
+input,select{
+    width:100%;
+    font-size:15px;
+    padding:12px 14px;
+    margin-bottom:14px;
+    border-radius:var(--radius);
+    border:1px solid rgba(0,0,0,.08);
+    background:rgba(255,255,255,.75);
+    transition:all var(--transition);
+}
+input:focus,select:focus{
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(112, 112, 112, 0.25);
+    transform:translateY(-4px);
+}
+/* 美化 select 下拉弹窗 */
+select{
+    cursor:pointer;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23007bff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    background-size:12px 8px;
+}
+select option{
+    padding:8px 12px;
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(var(--blur));
+    backdrop-filter:blur(var(--blur));
+    border-radius:var(--radius);
+    color:#333;
+}
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked{
+    background:var(--primary);
+    color:#fff;
+}
+.search-button{
+    width:100%;
+    padding:12px 0;
+    border:none;
+    border-radius:var(--radius);
+    background:var(--primary);
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    transition:transform .2s ease, background .2s ease;
+}
+.search-button:hover{background:var(--primary-dark)}
+.search-button:active{transform:scale(.97)}
+.browser-content{
+    margin-top:18px;
+    text-align:center;
+    font-size:14px;
+    color:#555;
+}
+</style>
+</head>
+<body>
+
+<div class="browser-container">
+    <h1 class="title">搜索</h1>
+
+    <input type="text" id="searchBar" placeholder="输入关键词或直接输入网址" autocomplete="off"/>
+    <select id="searchEngine">
+        <option value="https://www.baidu.com/s?wd=">百度 Baidu</option>
+        <option value="https://so.toutiao.com/search?keyword=">头条 Toutiao</option>
+        <option value="https://m.so.com/s?q=">好搜 360</option>
+        <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+        <option value="https://www.sogou.com/web?query=">搜狗 Sogou</option>
+        <option value="https://www.bing.com/search?q=">微软 Bing</option>
+    </select>
+    <button class="search-button" id="searchBtn">搜 索</button>
+
+    <div class="browser-content" id="browserContent"></div>
+</div>
+
+<script>
+const searchBar   = document.getElementById('searchBar');
+const searchBtn   = document.getElementById('searchBtn');
+const engineSel   = document.getElementById('searchEngine');
+const contentBox  = document.getElementById('browserContent');
+
+function handleSearch(){
+    const term = searchBar.value.trim();
+    if(!term){
+        contentBox.textContent = '未输入关键词';
+        searchBar.focus();
+        return;
+    }
+    const baseUrl = engineSel.value;
+    const finalUrl = term.startsWith('http') ? term : `${baseUrl}${encodeURIComponent(term)}`;
+    window.open(finalUrl,'_blank');
+}
+
+searchBar.addEventListener('keydown',e=>{
+    if(e.key==='Enter') handleSearch();
+});
+searchBtn.addEventListener('click',handleSearch);
+</script>
+</body>
+</html>

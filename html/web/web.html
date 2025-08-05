@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网站聚合导航</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #fcc96a;
+      --secondary: #f7a100;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --radius: 16px;
+      --shadow: 0 2px 12px 0 rgba(0,0,0,.06);
+      --shadow-hover: 0 12px 28px 0 rgba(0,0,0,.1);
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+    }
+    .header {
+      margin: 40px auto 48px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeInDown .8s .2s forwards cubic-bezier(.25,.46,.45,.94);
+    }
+    .title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg,var(--primary),var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -.5px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp .6s forwards cubic-bezier(.25,.46,.45,.94);
+      transition: .3s cubic-bezier(.25,.46,.45,.94);
+    }
+    .card:nth-child(n) {
+      animation-delay: calc(0.05s * var(--i));
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg,var(--primary),var(--secondary));
+      transform: scaleX(0);
+      transition: transform .3s ease;
+    }
+    .card:hover::after { transform: scaleX(1); }
+    .icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg,var(--primary),var(--secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 16px;
+      transition: .3s ease;
+    }
+    .card:hover .icon { transform: rotate(8deg) scale(1.08); }
+    .name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      letter-spacing: .2px;
+    }
+    .desc {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .back {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg,var(--primary),var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 1.4rem;
+      box-shadow: 0 3px 12px rgba(102,126,234,.4);
+      cursor: pointer;
+      transition: .25s ease;
+      opacity: 0;
+      animation: fadeInUp .6s .8s forwards cubic-bezier(.25,.46,.45,.94);
+    }
+    .back:hover { transform: scale(1.1); }
+    @keyframes fadeInDown {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+      .title { font-size: 1.9rem; }
+      .grid { grid-template-columns: 1fr; }
+      .card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">网站聚合空间来源：海盒</h1>
+    </header>
+
+    <div class="grid" id="grid">
+      <!-- 动态卡片 -->
+    </div>
+  </div>
+
+  <div class="back" onclick="history.back()">←</div>
+
+  <script>
+    const links = [
+      { name: "QQ查绑", desc: "QQ查询绑定手机与LOL信息", url: "https://www.ylawen.com/qq/", icon: "📱" },
+      { name: "短信轰炸机", desc: "呼死你么网页版工具", url: "http://www.husinimee.com/dxhzj/", icon: "📲" },
+      { name: "照妖镜", desc: "网恋照妖镜仅供娱乐恶搞", url: "https://zhaoyaojing.wanxiangyuanma.com/?ref=www.codernav.cn", icon: "👹" },
+      { name: "身份证恶搞", desc: "张伟身份证表情生成器", url: "https://www.diydoutu.com/news/sfzegao.html", icon: "🪪" },
+      { name: "QQ安全中心", desc: "找回密码、解冻账号", url: "https://accounts.qq.com/#/", icon: "🔐" },
+      { name: "表白网页", desc: "在线生成表白情书", url: "http://yigeqige.com/", icon: "💌" },
+      { name: "IP探针", desc: "照妖镜让妖怪无处遁形", url: "http://zyjb.zyjfkw.top/xzyj/", icon: "🕵️" },
+      { name: "身份证核验", desc: "在线验证身份证信息", url: "https://www.json.cn/text/idcard-check/", icon: "🆔" },
+      { name: "有道翻译", desc: "在线翻译工具", url: "https://m.youdao.com/translate", icon: "🌐" },
+      { name: "游戏大全", desc: "在线小游戏合集", url: "https://www.yikm.net/", icon: "🎮" },
+      { name: "手写字", desc: "手写字体生成器", url: "http://www.520transform.cn/", icon: "✍️" },
+      { name: "一个木函", desc: "多功能工具集合", url: "https://ol.woobx.cn/", icon: "🧰" },
+      { name: "贪吃蛇", desc: "经典在线贪吃蛇游戏", url: "http://slither.io/", icon: "🐍" },
+      { name: "八字排盘", desc: "在线八字命理分析", url: "https://bz.iwzwh.com/", icon: "📿" },
+      { name: "益智游戏", desc: "在线益智小游戏", url: "https://ioxapp.com/", icon: "🧩" },
+      { name: "图标设计", desc: "在线图标制作工具", url: "https://www.uugai.com/", icon: "🎨" },
+      { name: "工具哇", desc: "在线工具箱合集", url: "https://toolwa.com/", icon: "🔧" },
+      { name: "图片处理", desc: "在线图片编辑工具", url: "https://phototool.cn/", icon: "🖼️" },
+      { name: "世界时间", desc: "全球时间查询工具", url: "http://www.shijian.cc/", icon: "🕒" },
+      { name: "万年历", desc: "农历公历查询工具", url: "https://www.beijing-time.org/jb.html#nongli", icon: "📅" },
+      { name: "电影票房", desc: "实时票房数据查询", url: "https://piaofang.maoyan.com/box-office", icon: "🎬" },
+      { name: "纸片人制作", desc: "动漫头像生成器", url: "https://charat.me/mono/create/", icon: "👧" },
+      { name: "收款三合一", desc: "聚合收款码生成器", url: "https://piaofang.maoyan.com/box-office", icon: "💰" },
+      { name: "图片放大", desc: "AI无损图片放大", url: "https://tools.miku.ac/anime4k/", icon: "🔍" },
+      { name: "邮编查询", desc: "全国邮编快速查询", url: "https://y.8684.com/", icon: "📮" },
+      { name: "独特工具箱", desc: "实用在线工具集合", url: "https://www.dute.org/", icon: "🧰" },
+      { name: "视频解析", desc: "在线视频下载解析", url: "https://www.jspoo.com/vip.html", icon: "📥" },
+      { name: "对子生成器", desc: "AI对联自动生成", url: "https://ai.binwang.me/couplet/", icon: "📜" },
+      { name: "生理期计算", desc: "女性生理期预测", url: "http://www.thvksoft.com/", icon: "🩸" },
+      { name: "手语翻译", desc: "文字转手语动画", url: "http://shouyu.z12345.com/1-%E4%BD%A0%E5%90%83%E9%A5%AD%E4%BA%86%E5%90%97.html", icon: "🤟" },
+      { name: "单位换算", desc: "实用单位换算工具", url: "http://www.jsons.cn/heat/", icon: "📏" },
+      { name: "国学", desc: "中华传统文化学习", url: "https://gx.httpcn.com/", icon: "📚" },
+      { name: "房贷计算", desc: "房贷月供计算工具", url: "http://tools.53at.com/tools/house_calculator-master/index.html", icon: "🏠" },
+      { name: "帕鲁配种", desc: "幻兽帕鲁配种模拟", url: "https://palworld.caimogu.cc/breed.html", icon: "🐾" },
+      { name: "我不是盐神", desc: "AI文案生成器", url: "https://onehu.xyz/", icon: "🧂" },
+      { name: "召唤神龙", desc: "在线小游戏合集", url: "https://321fa.cn/0/6/", icon: "🐉" },
+      { name: "直播", desc: "高清直播在线观看", url: "https://www.957001.tv//", icon: "📺" },
+      { name: "据意查句", desc: "AI智能句子推荐", url: "https://wantquotes.net/", icon: "🧠" },
+      { name: "动文字", desc: "动态文字生成器", url: "https://aidn.jp/ugomoji/", icon: "💬" },
+      { name: "王者故事站", desc: "王者荣耀背景故事", url: "https://pvp.qq.com/ip/m/index.html", icon: "⚔️" },
+      { name: "蔷薇花园", desc: "在线匿名聊天室", url: "https://iirose.com/", icon: "🌹" },
+      { name: "遥控小车", desc: "3D遥控小车模拟器", url: "https://bruno-simon.com/", icon: "🚗" },
+      { name: "天空有多高", desc: "宇宙高度可视化", url: "http://www.secaibi.com/howbigisspace/", icon: "🌌" },
+      { name: "绝绝子生成器", desc: "网络热词生成器", url: "https://kingcos.me/jjz/", icon: "🔥" },
+      { name: "纪妖", desc: "中国妖怪百科", url: "https://www.cbaigui.com/", icon: "👺" },
+      { name: "分离人声", desc: "AI人声伴奏分离", url: "https://vocalremover.org/zh/", icon: "🎧" },
+      { name: "在线钢琴", desc: "网页钢琴模拟器", url: "https://gangqin.bmcx.com/", icon: "🎹" },
+      { name: "历史上的今天", desc: "历史事件查询", url: "https://www.lssjt.com/", icon: "📜" },
+      { name: "网络热词", desc: "最新网络流行语", url: "http://www.baidu.com", icon: "🔍" },
+      { name: "在线时间", desc: "全屏在线时钟", url: "https://clock.onlinealarmkur.com/zh-cn/", icon: "⏰" },
+      { name: "二次元", desc: "动漫捏脸等等", url: "https://picrew.me/ja/", icon: "❤️" },
+      { name: "英语自学网", desc: "在这里给自己的大脑下载英语语言包", url: "http://m.ysszj.com/", icon: "™️" },
+      { name: "网名生成器", desc: "在这里弄一个好的网名", url: "https://www.qiwangming.com/", icon: "™️" },
+      { name: "ip探针", desc: "仅可用于恶搞", url: "https://probe.wm404.com", icon: "🔞️" },
+      { name: "电鳗热舞", desc: "跟上音乐的节奏", url: "http://www.staggeringbeauty.com/", icon: "🐛" }
+    ];
+
+    function render(list) {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = list.map((r, i) => `
+        <div class="card" style="--i:${i}" onclick="window.open('${r.url}', '_blank')">
+          <div class="icon">${r.icon}</div>
+          <div class="name">${r.name}</div>
+          <div class="desc">${r.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    render(links);
+  </script>
+</body>
+</html>

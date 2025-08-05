@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>星界 - 关于</title>
+		<style type="text/css">                                                                               
+			body {
+				background: linear-gradient(135deg, #f7a100 0%, #ff8c00 100%);
+				color: #ffffff;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				margin: 0;
+				padding: 0;
+				min-height: 100vh;
+			}
+			
+			.container {
+			    display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                padding: 20px;
+                box-sizing: border-box;
+			}
+			
+			.titlecard {
+				background-color: rgba(255, 255, 255, 0.95);
+				color: #f7a100;
+				box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+				width: 90%;
+				max-width: 400px;
+				border-radius: 20px;
+				padding: 30px;
+				text-align: center;
+				transition: transform 0.3s ease;
+				margin: 20px 0;
+			}
+			
+			.titlecard:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+			}
+			
+			.logo {
+				width: 80px;
+				height: 80px;
+				margin-bottom: 15px;
+				object-fit: contain;
+			}
+			
+			h1 {
+				margin: 10px 0;
+				font-size: 28px;
+				color: #f7a100;
+			}
+			
+			p {
+				margin: 8px 0;
+				color: #666;
+				font-size: 16px;
+			}
+			
+			h3 {
+				margin: 12px 0;
+				color: #f7a100;
+				font-size: 16px;
+				font-weight: 500;
+			}
+			
+			.info-section {
+				margin: 20px 0;
+				padding: 15px 0;
+				border-top: 1px solid rgba(247, 161, 0, 0.2);
+				border-bottom: 1px solid rgba(247, 161, 0, 0.2);
+			}
+			
+			.link-button {
+				display: inline-block;
+				padding: 10px 20px;
+				margin: 8px 5px;
+				background-color: #f7a100;
+				color: white;
+				border-radius: 25px;
+				text-decoration: none;
+				font-size: 14px;
+				transition: all 0.3s ease;
+				border: 2px solid #f7a100;
+			}
+			
+			.link-button:hover {
+				background-color: white;
+				color: #f7a100;
+				transform: translateY(-2px);
+				box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			}
+			
+			.footer {
+				margin-top: 20px;
+				font-size: 14px;
+				color: white;
+				opacity: 0.8;
+			}
+			
+			@media (max-width: 480px) {
+				.titlecard {
+					width: 95%;
+					padding: 20px 15px;
+				}
+				
+				h1 {
+					font-size: 24px;
+				}
+				
+				p, h3 {
+					font-size: 14px;
+				}
+			}
+        </style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="titlecard">
+				<img src="logo.png" class="logo" alt="星界logo">
+				<h1>星界 V2.8.1</h1>
+				<p>星之界-畅"想"星河</p>
+                <p>欢迎你的使用</p>
+                
+                <div class="info-section">
+                    <h3>🖊 制作：cl小云ass/class_</h3>
+                    <h3>📕 合理使用开源资源</h3>
+                    <h3>🔍 版本：2.8.1</h3>
+                </div>
+                
+                <p>1.8版本新增3个新工具 共：23个 修复反馈系统</p>
+                
+                <div class="action-buttons">
+                    <a href="意见反馈.html" class="link-button">意见反馈</a>
+                    <a href="cc.html" class="link-button">投喂</a>
+                </div>
+			</div>
+			
+			<div class="footer">
+				星界v2.8.1
+			</div>
+		</div>
+	</body>
+</html>

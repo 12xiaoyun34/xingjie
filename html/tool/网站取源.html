@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 文档根元素，设置语言为简体中文 -->
+<head>
+    <!-- 文档头部，包含元数据和资源引用 -->
+    <meta charset="UTF-8">
+    <!-- 字符编码设置为UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 响应式视口设置 -->
+    <title>网页取源工具</title>
+    <!-- 页面标题 -->
+    
+    <!-- 引入 MDUI CSS 框架 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/css/mdui.min.css">
+    
+    <!-- 自定义CSS样式 -->
+    <style>
+        /* 定义CSS变量 */
+        :root {
+            --primary-color: #2196F3;  /* 主色调 */
+            --accent-color: #00BCD4;   /* 强调色 */
+            --text-color: #333;        /* 主要文字颜色 */
+            --light-text: #757575;     /* 浅色文字 */
+            --border-color: #e0e0e0;   /* 边框颜色 */
+            --bg-color: #f5f5f5;       /* 背景色 */
+        }
+        
+        /* 主体样式 */
+        body {
+            background-color: #fafafa;
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        /* 主容器样式 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* 头部区域样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* 标题样式 */
+        .header h1 {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        /* 副标题样式 */
+        .header p {
+            color: var(--light-text);
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        /* 输入区域样式 */
+        .input-area {
+            margin-bottom: 24px;
+        }
+        
+        /* 按钮组样式 */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        /* 按钮样式 */
+        .button-group .mdui-btn {
+            flex: 1;
+            min-width: 140px;
+            height: 44px;
+            font-size: 15px;
+            border-radius: 4px;
+            text-transform: none;
+        }
+        
+        /* 标签页容器样式 */
+        .tab-container {
+            margin-top: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* 标签页样式 */
+        .mdui-tab {
+            background-color: white;
+            padding: 0 16px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* 标签页链接样式 */
+        .mdui-tab a {
+            padding: 16px 20px;
+            color: var(--light-text);
+        }
+        
+        /* 活动标签页样式 */
+        .mdui-tab a.mdui-tab-active {
+            color: var(--primary-color);
+        }
+        
+        /* 结果容器样式 */
+        .result-container {
+            height: 550px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            position: relative;
+        }
+        
+        /* 代码预览样式 */
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            font-family: 'Roboto Mono', monospace;
+            padding: 16px;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        /* 预览iframe样式 */
+        #preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        /* 加载状态样式 */
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 100;
+        }
+        
+        /* 状态栏样式 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--light-text);
+        }
+        
+        /* 响应式设计 - 移动设备适配 */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 16px;
+            }
+            
+            .button-group .mdui-btn {
+                flex: 100%;
+            }
+            
+            .result-container {
+                height: 400px;
+            }
+            
+            .mdui-tab a {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<!-- 页面主体，应用MDUI主题 -->
+<body class="mdui-theme-primary-blue mdui-theme-accent-cyan">
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 头部区域 -->
+        <div class="header">
+            <h1>网页取源工具</h1>
+            <p>获取任意网页的源代码、响应头和元数据</p>
+        </div>
+        
+        <!-- URL输入区域 -->
+        <div class="input-area">
+            <!-- MDUI文本输入框 -->
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <i class="mdui-icon material-icons">link</i>
+                <label class="mdui-textfield-label">输入网址</label>
+                <input class="mdui-textfield-input" type="url" id="url" placeholder="输入网址 | https://example.com" required/>
+                <div class="mdui-textfield-helper">请输入完整的URL地址，包含http://或https://</div>
+            </div>
+        </div>
+        
+        <!-- 按钮组 -->
+        <div class="button-group">
+            <!-- 获取源代码按钮 -->
+            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" onclick="fetchSourceCode()">
+                <i class="mdui-icon material-icons">code</i> 获取源代码
+            </button>
+            <!-- 复制代码按钮 -->
+            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" onclick="copyToClipboard()">
+                <i class="mdui-icon material-icons">content_copy</i> 复制代码
+            </button>
+            <!-- 清空按钮 -->
+            <button class="mdui-btn mdui-btn-raised mdui-ripple" onclick="clearAll()">
+                <i class="mdui-icon material-icons">clear</i> 清空
+            </button>
+        </div>
+        
+        <!-- 标签页容器 -->
+        <div class="tab-container">
+            <!-- 标签页导航 -->
+            <div class="mdui-tab mdui-tab-scrollable" id="tab">
+                <!-- 源代码标签 -->
+                <a href="#source-tab" class="mdui-ripple mdui-tab-active">
+                    <i class="mdui-icon material-icons mdui-icon-left">code</i>源代码
+                </a>
+                <!-- 响应头标签 -->
+                <a href="#headers-tab" class="mdui-ripple">
+                    <i class="mdui-icon material-icons mdui-icon-left">list</i>响应头
+                </a>
+                <!-- 预览标签 -->
+                <a href="#preview-tab" class="mdui-ripple">
+                    <i class="mdui-icon material-icons mdui-icon-left">visibility</i>预览
+                </a>
+                <!-- 元数据标签 -->
+                <a href="#metadata-tab" class="mdui-ripple">
+                    <i class="mdui-icon material-icons mdui-icon-left">info</i>元数据
+                </a>
+            </div>
+            
+            <!-- 源代码结果面板 -->
+            <div id="source-tab" class="result-container">
+                <pre id="source-result">请输入URL并点击"获取源代码"按钮</pre>
+            </div>
+            
+            <!-- 响应头结果面板 -->
+            <div id="headers-tab" class="result-container" style="display:none">
+                <pre id="headers-result">响应头信息将显示在这里</pre>
+            </div>
+            
+            <!-- 预览结果面板 -->
+            <div id="preview-tab" class="result-container" style="display:none">
+                <iframe id="preview-frame"></iframe>
+            </div>
+            
+            <!-- 元数据结果面板 -->
+            <div id="metadata-tab" class="result-container" style="display:none">
+                <pre id="metadata-result">页面元数据将显示在这里</pre>
+            </div>
+            
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span id="status-message">就绪</span>
+                <span id="response-time"></span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 引入 MDUI JS 框架 -->
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
+    <script src="baohu.js"></script>
+    
+    <!-- 自定义JavaScript代码 -->
+    <script>
+        // 初始化标签页组件
+        const tab = new mdui.Tab('#tab');
+        // 记录上次获取时间
+        let lastFetchTime = 0;
+        
+        // 更新状态栏信息
+        function updateStatus(message, time = null) {
+            document.getElementById('status-message').textContent = message;
+            if (time !== null) {
+                document.getElementById('response-time').textContent = `响应时间: ${time}ms`;
+            }
+        }
+        
+        // 获取源代码的主函数
+        async function fetchSourceCode() {
+            // 获取输入框的值
+            const url = document.getElementById('url').value.trim();
+            // 获取各个结果元素
+            const sourceResult = document.getElementById('source-result');
+            const headersResult = document.getElementById('headers-result');
+            const previewFrame = document.getElementById('preview-frame');
+            const metadataResult = document.getElementById('metadata-result');
+            
+            // 验证URL是否为空
+            if (!url) {
+                mdui.snackbar('请输入URL地址');
+                return;
+            }
+            
+            // 验证URL格式
+            if (!/^https?:\/\//i.test(url)) {
+                mdui.snackbar('请输入以http://或https://开头的URL');
+                return;
+            }
+            
+            // 显示加载状态
+            sourceResult.innerHTML = '<div class="loading"><div class="mdui-spinner mdui-spinner-colorful"></div><span style="margin-left:16px;">正在加载...</span></div>';
+            headersResult.textContent = '加载中...';
+            metadataResult.textContent = '加载中...';
+            previewFrame.src = '';
+            updateStatus('正在请求数据...');
+            
+            // 记录开始时间
+            const startTime = Date.now();
+            
+            try {
+                // 使用CORS代理绕过跨域限制
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                
+                // 发送获取请求
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                // 计算耗时
+                const elapsedTime = Date.now() - startTime;
+                lastFetchTime = elapsedTime;
+                
+                // 处理返回数据
+                if (data.contents) {
+                    // 显示源代码
+                    sourceResult.textContent = data.contents;
+                    
+                    // 在iframe中加载原始URL进行预览
+                    previewFrame.src = url;
+                    
+                    // 提取并显示元数据
+                    extractMetadata(data.contents);
+                    
+                    // 更新状态
+                    updateStatus('获取成功', elapsedTime);
+                    mdui.snackbar(`源代码获取成功 (${elapsedTime}ms)`);
+                } else {
+                    sourceResult.textContent = '无法获取源代码: ' + (data.error || '未知错误');
+                    updateStatus('获取失败', elapsedTime);
+                }
+                
+                // 获取响应头信息
+                try {
+                    const headResponse = await fetch(url, { method: 'HEAD' });
+                    const headers = [];
+                    // 遍历响应头
+                    headResponse.headers.forEach((value, key) => {
+                        headers.push(`${key}: ${value}`);
+                    });
+                    headersResult.textContent = headers.join('\n');
+                } catch (e) {
+                    headersResult.textContent = '无法获取响应头: ' + e.message;
+                }
+            } catch (error) {
+                // 错误处理
+                const elapsedTime = Date.now() - startTime;
+                sourceResult.textContent = '获取失败: ' + error.message;
+                headersResult.textContent = '获取响应头失败: ' + error.message;
+                metadataResult.textContent = '无法提取元数据';
+                updateStatus('获取失败', elapsedTime);
+                mdui.snackbar('获取失败: ' + error.message);
+            }
+        }
+        
+        // 从HTML中提取元数据
+        function extractMetadata(html) {
+            // 使用DOMParser解析HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const metadata = [];
+            
+            // 提取标题
+            const title = doc.querySelector('title')?.textContent || '无标题';
+            metadata.push(`标题: ${title}`);
+            
+            // 提取描述
+            const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '无描述';
+            metadata.push(`描述: ${description}`);
+            
+            // 提取关键词
+            const keywords = doc.querySelector('meta[name="keywords"]')?.getAttribute('content') || '无关键词';
+            metadata.push(`关键词: ${keywords}`);
+            
+            // 提取字符集
+            const charset = doc.querySelector('meta[charset]')?.getAttribute('charset') || 
+                           doc.querySelector('meta[http-equiv="Content-Type"]')?.getAttribute('content') || 
+                           '未指定';
+            metadata.push(`字符集: ${charset}`);
+            
+            // 提取viewport设置
+            const viewport = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '未指定';
+            metadata.push(`Viewport: ${viewport}`);
+            
+            // 统计链接数量
+            const links = doc.querySelectorAll('a').length;
+            metadata.push(`链接数量: ${links}`);
+            
+            // 统计图片数量
+            const images = doc.querySelectorAll('img').length;
+            metadata.push(`图片数量: ${images}`);
+            
+            // 统计脚本数量
+            const scripts = doc.querySelectorAll('script').length;
+            metadata.push(`脚本数量: ${scripts}`);
+            
+            // 统计样式表数量
+            const styles = doc.querySelectorAll('link[rel="stylesheet"], style').length;
+            metadata.push(`样式表数量: ${styles}`);
+            
+            // 显示元数据
+            document.getElementById('metadata-result').textContent = metadata.join('\n');
+        }
+        
+        // 复制源代码到剪贴板
+        function copyToClipboard() {
+            const sourceResult = document.getElementById('source-result');
+            
+            // 检查是否有内容可复制
+            if (sourceResult.textContent === '请输入URL并点击"获取源代码"按钮') {
+                mdui.snackbar('请先获取源代码');
+                return;
+            }
+            
+            // 创建选择范围
+            const range = document.createRange();
+            range.selectNode(sourceResult);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                // 执行复制命令
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    mdui.snackbar('已复制到剪贴板');
+                } else {
+                    mdui.snackbar('复制失败');
+                }
+            } catch (err) {
+                mdui.snackbar('复制失败: ' + err);
+            }
+            
+            // 清除选择
+            window.getSelection().removeAllRanges();
+        }
+        
+        // 清空所有内容
+        function clearAll() {
+            document.getElementById('url').value = '';
+            document.getElementById('source-result').textContent = '请输入URL并点击"获取源代码"按钮';
+            document.getElementById('headers-result').textContent = '响应头信息将显示在这里';
+            document.getElementById('metadata-result').textContent = '页面元数据将显示在这里';
+            document.getElementById('preview-frame').src = '';
+            updateStatus('已清空');
+            document.getElementById('response-time').textContent = '';
+        }
+        
+        // 监听URL输入框的回车键
+        document.getElementById('url').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchSourceCode();
+            }
+        });
+    </script>
+</body>
+</html>

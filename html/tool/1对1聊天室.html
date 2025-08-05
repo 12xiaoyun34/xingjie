@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>P2P聊天室</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        #messages { height: 300px; border: 1px solid #ddd; padding: 10px; overflow-y: scroll; margin-bottom: 10px; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 18px; display: inline-block; max-width: 70%; }
+        .received { background: #e5e5ea; float: left; clear: both; }
+        .sent { background: #007aff; color: white; float: right; clear: both; }
+        input, button { padding: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        button { background: #f7a100; color: white; border: none; cursor: pointer; }
+        #peerId { font-weight: bold; word-break: break-all; }
+    </style>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <h1>P2P聊天室</h1>
+    <div>你的ID: <span id="peerId">正在生成...</span></div>
+    <div>要连接到: <input type="text" id="peerIdInput" placeholder="输入对方的ID"></div>
+    <button id="connectButton">连接</button>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="输入消息..." autocomplete="off">
+    <button id="sendButton">发送</button>
+
+    <script>
+        let peer;
+        let conn;
+        const myId = 'user-' + Math.random().toString(36).substr(2, 8);
+        
+        // 初始化Peer
+        function initializePeer() {
+            peer = new Peer(myId, {
+                host: '0.peerjs.com',
+                port: 443,
+                path: '/',
+                debug: 3
+            });
+            
+            peer.on('open', (id) => {
+                document.getElementById('peerId').textContent = id;
+            });
+            
+            peer.on('connection', (connection) => {
+                conn = connection;
+                setupConnection();
+            });
+            
+            peer.on('error', (err) => {
+                console.error('Peer错误:', err);
+                alert('连接错误: ' + err.message);
+            });
+        }
+        
+        // 连接按钮
+        document.getElementById('connectButton').addEventListener('click', () => {
+            const peerId = document.getElementById('peerIdInput').value.trim();
+            if (!peerId) return;
+            
+            conn = peer.connect(peerId);
+            setupConnection();
+        });
+        
+        // 设置连接
+        function setupConnection() {
+            conn.on('open', () => {
+                addMessage('系统', '连接已建立', 'received');
+            });
+            
+            conn.on('data', (data) => {
+                addMessage(data.sender, data.message, 'received');
+            });
+            
+            conn.on('close', () => {
+                addMessage('系统', '连接已关闭', 'received');
+            });
+            
+            conn.on('error', (err) => {
+                console.error('连接错误:', err);
+                addMessage('系统', '连接错误: ' + err.message, 'received');
+            });
+        }
+        
+        // 发送消息
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value.trim();
+            if (!message || !conn || !conn.open) return;
+            
+            conn.send({
+                sender: myId,
+                message: message
+            });
+            
+            addMessage('我', message, 'sent');
+            document.getElementById('messageInput').value = '';
+        }
+        
+        // 添加消息到界面
+        function addMessage(sender, message, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <strong>${sender}</strong><br>
+                ${message}<br>
+                <small>${new Date().toLocaleTimeString()}</small>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // 初始化
+        initializePeer();
+    </script>
+</body>
+</html>
